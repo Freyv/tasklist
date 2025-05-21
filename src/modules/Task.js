@@ -16,7 +16,7 @@ async function decode(authHeader) {
   }
 }
 module.exports.getbyProjectId = async (req, res) => {
-  const { projectId } = req.params.projectId;
+  const projectId = req.params.projectId;
 
   try {
     const tasks = await prisma.task.findMany({
@@ -25,6 +25,19 @@ module.exports.getbyProjectId = async (req, res) => {
     if (!tasks) res.status(401);
     res.status(200).json(tasks);
   } catch {}
+};
+module.exports.getbyassignedId = async (req, res) => {
+  const userID = req.params.userID;
+
+  try {
+    const tasks = await prisma.task.findMany({
+      where: { assignedToId: userID },
+      select: { name: true, description: true },
+    });
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(401).json;
+  }
 };
 
 module.exports.create = async (req, res) => {
@@ -43,9 +56,9 @@ module.exports.create = async (req, res) => {
     select: { name: true },
   });
 
-  if (!project) {
-    return res.status(404).json({ error: "Projeto não encontrado" });
-  }
+  // if (!project) {
+  //   return res.status(404).json({ error: "Projeto não encontrado" });
+  // }
 
   const data = req.body;
 

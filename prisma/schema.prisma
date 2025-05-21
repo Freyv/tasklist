@@ -46,7 +46,7 @@ model Task {
   description   String
   project       Project  @relation("projecttasks", fields: [projectId], references: [id])
   projectId     String   @db.ObjectId
-  projectName   String?  
+  projectName   String  
 
   author        User     @relation("usertasks", fields: [authorId], references: [id])
   authorId      String   @db.ObjectId

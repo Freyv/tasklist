@@ -22,5 +22,5 @@ route.put('/projects/:id',authMiddleware,project.update)
 //rotas de task
 route.get('/projects/:projectId/tasks',authMiddleware,Task.getbyProjectId)
 route.post('/projects/:projectId',authMiddleware, Task.create)
-
+route.get('/:userID/tasks',authMiddleware,Task.getbyassignedId)
 module.exports = route

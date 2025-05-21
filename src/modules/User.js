@@ -7,8 +7,8 @@ const SECRET = process.env.JWT_SECRET;
 
 
 
-console.log('nununununu')
-console.log(SECRET)
+
+
 
 async function  hash(content){
    const hash = await bcrypt.hash(content,salts)

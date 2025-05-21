@@ -11,7 +11,7 @@ module.exports.getbyowerid = async (req, res) => {
   const userId = payload.userId || payload.userID || payload.userId;
   try {
     const projects = await prisma.project.findMany({
-      where: { ownerId: userId },
+      where: { ownerId: userId }, include:{tasks: true}
     });
     res.status(200).json(projects);
   } catch (e) {
