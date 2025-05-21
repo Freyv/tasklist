@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String   @unique
+  hashpass      String
+  projects      Project[] @relation("userProjects")
+
+  tasks         Task[]   @relation("usertasks")        // tarefas criadas pelo usuário
+  pendingtasks  Task[]   @relation("assignedtasks")    // tarefas atribuídas ao usuário
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  author      User     @relation("userProjects", fields: [ownerId], references: [id])
+  ownerId     String   @db.ObjectId
+  tasks       Task[]   @relation("projecttasks")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Task {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String
+  project       Project  @relation("projecttasks", fields: [projectId], references: [id])
+  projectId     String   @db.ObjectId
+  projectName   String?  
+
+  author        User     @relation("usertasks", fields: [authorId], references: [id])
+  authorId      String   @db.ObjectId
+
+  assignedTo    User     @relation("assignedtasks", fields: [assignedToId], references: [id])
+  assignedToId  String   @db.ObjectId
+}
